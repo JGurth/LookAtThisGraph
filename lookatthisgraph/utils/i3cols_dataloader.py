@@ -20,7 +20,7 @@ def get_energies(mcprimary, mctree, mctree_idx, dtype=np.float32):
         pdg = this_mctree['particle']['pdg_encoding']
         en = this_mctree['particle']['energy']
 
-        muon_mask = np.abs(pdg) == 13
+        muon_mask = np.abs(pdg) == 13                                           #?
         if np.any(muon_mask):
             track_energy[i] = np.max(en[muon_mask])
 
@@ -47,7 +47,7 @@ def get_params(labels, mcprimary, mctree, mctree_idx, dtype=np.float32):
     params = np.empty(mcprimary.shape + (len(labels), ), dtype=dtype)
 
     for i, label in enumerate(labels):
-        if label == 'x': params[:, i] = mcprimary['pos']['x']
+        if label == 'x': params[:, i] = mcprimary['pos']['x']                   #?
         elif label == 'y': params[:, i] = mcprimary['pos']['y']
         elif label == 'z': params[:, i] = mcprimary['pos']['z']
         elif label == 'time': params[:, i] = mcprimary['time']
@@ -85,7 +85,7 @@ def load_charges(dir='/home/iwsatlas1/peller/work/oscNext/level7_v01.04/140000_i
     mcprimary = np.load(os.path.join(dir, 'MCInIcePrimary/data.npy'))
 
     # Get charge per event
-    total_charge = np.zeros((hits_idx.shape[0], 2), dtype=dtype)
+    total_charge = np.zeros((hits_idx.shape[0], 2), dtype=dtype)                #?
     for i in range(len(hits_idx)):
         this_idx = hits_idx[i]
         this_hits = hits[this_idx['start'] : this_idx['stop']]

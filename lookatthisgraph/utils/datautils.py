@@ -80,7 +80,7 @@ def torch_to_numpy(x):
         return np.asarray(x.cpu().detach())
 
 
-def process_charges(event, charge_col=4):
+def process_charges(event, charge_col=4):                   #Why?
     new_event = deepcopy(event)
     log_charge = np.log10(new_event[:, charge_col])
     new_event[:, charge_col] = log_charge
@@ -106,7 +106,7 @@ def build_data_list(normalized_features, y_transformed, include_charge=True, cha
 def evaluate(model, loader, device):
     with torch.no_grad():
         model.eval()
-        pred = [torch_to_numpy(model(batch.to(device))) for batch in tqdm(loader)]
+        pred = [torch_to_numpy(model(batch.to(device))) for batch in tqdm(loader)]          #tqdm?
     return np.array(pred)
 
 

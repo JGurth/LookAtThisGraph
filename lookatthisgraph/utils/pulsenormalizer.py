@@ -16,7 +16,7 @@ class PulseNormalizer:
     '''
     def __init__(self, events, norm_cols=None, eps=None):
         self._events = events
-        self._norm_cols = norm_cols if norm_cols else list(range(events[0].shape[1]))
+        self._norm_cols = norm_cols if norm_cols else list(range(events[0].shape[1]))   #?
 
         self.mode = None
         logging.debug('Getting normalization parameters')

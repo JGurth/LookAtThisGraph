@@ -1,4 +1,4 @@
-import logging
+import logging #?
 import torch
 import matplotlib.pyplot as plt
 import numpy as np
@@ -67,7 +67,7 @@ class Trainer:
 
 
     def _get_loaders(self):
-        split = lambda s: int(self.dataset.n_events * s) if s < 1 else int(s)
+        split = lambda s: int(self.dataset.n_events * s) if s < 1 else int(s)       #?
 
         if self._val_split == 'batch':
             n_val = self._batch_size
