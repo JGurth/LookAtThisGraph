@@ -7,19 +7,20 @@ import torch
 from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.utils.model import Model
-
+from datetime import datetime, timedelta
 
 FileLocation="Data/140000"
 train_set = Dataset([FileLocation])
-width=128
-conv_depth=3
+width=1024
+conv_depth=10
+resultlist=[]
 #for width in range(64, 1025, 64):
     #for conv_depth in range(2, 11):
-for lin_depth in range(4,6):
+for lin_depth in range(15,20):
+    
 
 
-
-
+    start=datetime.utcnow()
     train_config = {
             'learning_rate': 7e-4,
             'scheduling_step_size': 30,        
@@ -37,7 +38,17 @@ for lin_depth in range(4,6):
     trainer.train()
     trainer.load_best_model()
     prediction, truth = trainer.evaluate_test_samples()
-    print("Fertig")
+    
+    end=datetime.utcnow()
+    time=timedelta.total_seconds(end-start)
+    prediction=torch.from_numpy(prediction)
+    truth=torch.from_numpy(truth[train_config['training_target']].flatten())
+    avrg=torch.mean(torch.sub(prediction, truth)).item()
+    result=torch.tensor([avrg, time, width, conv_depth, lin_depth])
+    resultlist.append(result)
+
+endresult=torch.cat(resultlist, 0)
+print(endresult)
 
 #plt.figure()
 #plt.plot(np.arange(len(trainer.train_losses)), trainer.train_losses, label='Training loss')
