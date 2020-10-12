@@ -15,6 +15,7 @@ from lookatthisgraph.nets.ConvNet import ConvNet
 class Trainer:
     def __init__(self, config):
         logging.basicConfig(format='%(asctime)s: %(message)s', level=logging.INFO)
+        self.config=config
         self.dataset = config['dataset']
         self.training_target = config['training_target']
         # self.include_charge = config['include_charge'] if 'include_charge' in config else True
@@ -25,6 +26,9 @@ class Trainer:
         self._target_dim = len(self._target_col)
         logging.debug('Training using %d features on %d targets', self._source_dim, self._target_dim)
         self.reshuffle()
+        self.width=128
+        self.conv_depth=3
+        self.lin_depth=5
 
         self._batch_size = config['batch_size']
 
@@ -39,7 +43,11 @@ class Trainer:
         self._classification = bool(isinstance(self.crit, BCELoss))
 
         self._device = torch.device('cuda') if 'device' not in config else torch.device(config['device'])
-        net = config['net'] if 'net' in config else ConvNet(self._source_dim, self._target_dim, self._classification)
+        if 'dim' in config:
+            self.width=config['dim'][0]
+            self.conv_depth=config['dim'][1]
+            self.lin_depth=config['dim'][2]
+        net = config['net'] if 'net' in config else ConvNet(self._source_dim, self._target_dim, self._classification, self.width, self.conv_depth, self.lin_depth)
         self.model = net.to(self._device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=config['learning_rate'])
         if 'scheduling_step_size' in config and 'scheduling_gamma' in config:
@@ -92,6 +100,12 @@ class Trainer:
             raise ValueError('Loader configuration exceeds number of data samples')
 
         dataset_shuffled = [self.data_list[i] for i in self.permutation]
+        #a=dataset_shuffled[:4]
+        #b=dataset_shuffled[4:]
+        #c=a+b
+        #print(dataset_shuffled==c)
+        #self.dataset_shuffled=dataset_shuffled
+        #self.c=c
 
         train_loader = DataLoader(dataset_shuffled[:n_train], self._batch_size, drop_last=True, shuffle=True)
         val_loader = DataLoader(dataset_shuffled[n_train:n_train+n_val], self._batch_size, drop_last=True)
@@ -201,6 +215,9 @@ class Trainer:
             'time_training_start': self._time_start,
             'permutation': self._train_perm,
             'best_model': self.state_dicts[np.argmin(self.validation_losses)],
+            'net_width' : self.width if 'net' in self.config else None,
+            'net_conv_depth' : self.conv_depth if 'net' in self.config else None,
+            'net_lin_depth' : self.lin_depth if 'net' in self.config else None,
         }
         try:
             training_info['time_training_end'] = self._time_end

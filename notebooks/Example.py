@@ -19,8 +19,8 @@ train_config = {
         'scheduling_gamma': .7,
         'training_target': 'energy',
         'dataset': train_set,
-        'train_split': 2e3,
-        'test_split': 1e5,
+        'train_split': 1e5,
+        'test_split': 2e3,
         'batch_size': 1024,
         'max_epochs': 100,
     }
