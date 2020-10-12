@@ -75,41 +75,74 @@ class Trainer:
 
 
     def _get_loaders(self):
-        split = lambda s: int(self.dataset.n_events * s) if s < 1 else int(s)       #?
+        split = lambda s: int(self.dataset.n_events * s) if s < 1 else int(s) 
 
-        if self._val_split == 'batch':
-            n_val = self._batch_size
-        else:
-            n_val = split(self._val_split)
-        if self._train_split is None:
-            if self._test_split is not None:
-                n_test = split(self._test_split)
+        #kFold Block:
+        if 'kFold_max' in self.config and 'kFold_crnt' in self.config:
+            
+            if 'kFold_size' in self.config:
+                k_datalist=self.data_list[:self.config['kFold_size']]
             else:
-                n_test = 0
-            n_train = len(self.data_list) - n_val - n_test
+                k_datalist=self.data_list
+            
+            
+            size=len(k_datalist)//self.config['kFold_max'] #size of the k groups of data
+            vallist=[]
+            k_train=[]
+            #Validation Size:
+            n_val=self.config['validation_split'] if 'validation_split' in self.config else self.config['batch_size']
+            #list of the k groups of Data
+            for i in range(self.config['kFold_max']):
+                vallist.append(k_datalist[i*size:(i+1)*size])
+            #picking of the test group and recombination of the training group
+            for i in range(len(vallist)):
+                if i==self.config['kFold_crnt']:
+                    k_test=vallist[i]
+                else:
+                    k_train+=vallist[i]
+            #validiation group
+            k_val=[self.data_list[i] for i in self.permutation][:n_val]
+            
+            n_test=len(k_test)
+            n_train=len(k_train)
+            
+            logging.info('%d training samples, %d validation samples, %d test samples received; %d ununsed',
+                    n_train, n_val, n_test, len(self.data_list) - n_train - n_val - n_test)
+            if n_train + n_val + n_test > self.dataset.n_events:
+                raise ValueError('Loader configuration exceeds number of data samples')
+            
+            train_loader = DataLoader(k_train, self._batch_size, drop_last=True, shuffle=True)
+            val_loader = DataLoader(k_val, self._batch_size, drop_last=True)
+            test_loader = DataLoader(k_test, self._batch_size, drop_last=True)
+        
+        #normal Block:
         else:
-            n_train = split(self._train_split)
-            if self._test_split is not None:
-                n_test = split(self._test_split)
+            dataset_shuffled = [self.data_list[i] for i in self.permutation]
+            if self._val_split == 'batch':
+                n_val = self._batch_size
             else:
-                n_test = len(self.data_list) - n_train - n_val
+                n_val = split(self._val_split)
+            if self._train_split is None:
+                if self._test_split is not None:
+                    n_test = split(self._test_split)
+                else:
+                    n_test = 0
+                n_train = len(self.data_list) - n_val - n_test
+            else:
+                n_train = split(self._train_split)
+                if self._test_split is not None:
+                    n_test = split(self._test_split)
+                else:
+                    n_test = len(self.data_list) - n_train - n_val
+    
+            logging.info('%d training samples, %d validation samples, %d test samples received; %d ununsed',
+                    n_train, n_val, n_test, len(self.data_list) - n_train - n_val - n_test)
+            if n_train + n_val + n_test > self.dataset.n_events:
+                raise ValueError('Loader configuration exceeds number of data samples')
 
-        logging.info('%d training samples, %d validation samples, %d test samples received; %d ununsed',
-                n_train, n_val, n_test, len(self.data_list) - n_train - n_val - n_test)
-        if n_train + n_val + n_test > self.dataset.n_events:
-            raise ValueError('Loader configuration exceeds number of data samples')
-
-        dataset_shuffled = [self.data_list[i] for i in self.permutation]
-        #a=dataset_shuffled[:4]
-        #b=dataset_shuffled[4:]
-        #c=a+b
-        #print(dataset_shuffled==c)
-        #self.dataset_shuffled=dataset_shuffled
-        #self.c=c
-
-        train_loader = DataLoader(dataset_shuffled[:n_train], self._batch_size, drop_last=True, shuffle=True)
-        val_loader = DataLoader(dataset_shuffled[n_train:n_train+n_val], self._batch_size, drop_last=True)
-        test_loader = DataLoader(dataset_shuffled[n_train+n_val:][:n_test], self._batch_size, drop_last=True)
+            train_loader = DataLoader(dataset_shuffled[:n_train], self._batch_size, drop_last=True, shuffle=True)
+            val_loader = DataLoader(dataset_shuffled[n_train:n_train+n_val], self._batch_size, drop_last=True)
+            test_loader = DataLoader(dataset_shuffled[n_train+n_val:][:n_test], self._batch_size, drop_last=True)
 
         return train_loader, val_loader, test_loader
 
