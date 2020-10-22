@@ -12,6 +12,7 @@ from lookatthisgraph.utils.datautils import build_data_list, evaluate
 from lookatthisgraph.nets.ConvNet import ConvNet
 
 
+
 class Trainer:
     def __init__(self, config):
         logging.basicConfig(format='%(asctime)s: %(message)s', level=logging.INFO)
@@ -177,7 +178,6 @@ class Trainer:
                 pass
             logging.info("Training loss:%10.3e | Validation loss:%10.3e | Epoch %d / %d | Min validation loss:%10.3e at epoch %d",
                          self.train_losses[-1], self.validation_losses[-1], epoch, self._max_epochs, np.min(self.validation_losses), np.argmin(self.validation_losses))
-
         self._time_end = str(datetime.utcnow())
 
 
@@ -203,7 +203,7 @@ class Trainer:
             loss.backward()
             loss_all += float(data.num_graphs * (loss.item()))
             self.optimizer.step()
-
+        
         self.train_losses.append(loss_all / len(self.train_loader.dataset))
 
 

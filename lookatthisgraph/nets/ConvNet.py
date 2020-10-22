@@ -19,8 +19,6 @@ class ConvNet(torch.nn.Module):
         n_intermediate2 = 2*self.conv_depth*n_intermediate
         self.conv1 = TAGConv(self.n_features, n_intermediate, 2)            #?
         self.convfkt=torch.nn.ModuleList([TAGConv(n_intermediate, n_intermediate, 2) for i in range(self.conv_depth-1)])
-        self.conv2 = TAGConv(n_intermediate, n_intermediate, 2)
-        self.conv3 = TAGConv(n_intermediate, n_intermediate, 2)
         ratio = .9
         self.batchnorm1 = BatchNorm1d(n_intermediate2)                      #?
         self.linearfkt=torch.nn.ModuleList([torch.nn.Linear(n_intermediate2, n_intermediate2) for i in range(self.lin_depth)])

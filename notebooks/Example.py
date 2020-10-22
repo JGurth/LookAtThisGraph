@@ -8,24 +8,27 @@ import torch
 from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.utils.model import Model
+from lookatthisgraph.utils.LDataset import LDataset
+from lookatthisgraph.utils.LTrainer import LTrainer
 
 
 FileLocation="Data/140000"
-train_set = Dataset([FileLocation])
+
 
 train_config = {
         'learning_rate': 7e-4,
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'dataset': train_set,
-        'train_split': 1e5,
-        'test_split': 2e3,
+        'train_split': 1e4,
+        'test_split': 1e5,
         'batch_size': 1024,
-        'max_epochs': 100,
+        'max_epochs': 50,
     }
+train_set = LDataset([FileLocation], train_config)
+train_config['dataset']=train_set
 
-trainer = Trainer(train_config)
+trainer = LTrainer(train_config)
 trainer.train()
 
 plt.figure()

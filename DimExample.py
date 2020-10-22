@@ -6,11 +6,23 @@ import numpy as np
 import torch
 from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
-from lookatthisgraph.utils.model import Model
 from datetime import datetime, timedelta
 
 FileLocation="Data/140000"
+train_config = {
+        'learning_rate': 7e-4,
+        'scheduling_step_size': 30,        
+        'scheduling_gamma': .7,
+        'training_target': 'energy',
+        'train_split': 2e3,
+        'test_split': 1e5,
+        'batch_size': 64,
+        'max_epochs': 100,
+    }
 train_set = Dataset([FileLocation])
+train_config['dataset']=train_set
+
+
 width=254
 conv_depth=6
 lin_depth=5
@@ -21,18 +33,8 @@ for lin_depth in range(10,40,10):
     
 #TRY/EXCEPT
 
-    train_config = {
-            'learning_rate': 7e-4,
-            'scheduling_step_size': 30,        
-            'scheduling_gamma': .7,
-            'training_target': 'energy',
-            'dim': [width, conv_depth, lin_depth],
-            'dataset': train_set,
-            'train_split': 2e3,
-            'test_split': 1e5,
-            'batch_size': 64,
-            'max_epochs': 100,
-        }
+    train_config['dim']=[width, conv_depth, lin_depth]
+    
     
     trainer = Trainer(train_config)
     trainer.train()
