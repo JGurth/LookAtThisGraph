@@ -5,7 +5,9 @@ from lookatthisgraph.utils.trainer import Trainer
 
 
 class LTrainer(Trainer):
-    'Needs to be used with LDataset'    
+    'Needs to be used with LDataset'
+    def __init__(self, config):
+        super(LTrainer, self).__init__(config)
     
     
     def _get_loaders(self):

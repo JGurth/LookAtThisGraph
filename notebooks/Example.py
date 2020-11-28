@@ -10,7 +10,7 @@ from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.utils.model import Model
 from lookatthisgraph.utils.LDataset import LDataset
 from lookatthisgraph.utils.LTrainer import LTrainer
-
+from lookatthisgraph.nets.ConvNet import ConvNet
 
 FileLocation="Data/140000"
 
@@ -20,11 +20,13 @@ train_config = {
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'train_split': 1e4,
+        'train_split': 1e5,
         'test_split': 1e5,
-        'batch_size': 1024,
-        'max_epochs': 50,
+        'batch_size': 512,
+        'max_epochs': 40,
+        'Net': ConvNet
     }
+#LDataset hängt von Config ab und muss deswegen in dieser Reihenfolge definiert werden:
 train_set = LDataset([FileLocation], train_config)
 train_config['dataset']=train_set
 
@@ -42,6 +44,10 @@ plt.show()
     
 trainer.load_best_model()
 prediction, truth = trainer.evaluate_test_samples()
+prediction=torch.from_numpy(prediction)
+truth=torch.from_numpy(truth[train_config['training_target']].flatten())
+avrg=torch.mean(torch.square(torch.sub(prediction, truth))).item()  #Average
+print(avrg)
 
 plt.figure()
 bins = np.linspace(0,3,100)

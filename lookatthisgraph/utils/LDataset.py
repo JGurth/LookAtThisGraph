@@ -5,7 +5,7 @@ import numpy as np
 
 
 class LDataset(DS, Dataset):
-    'Needs config: train/test/validation_split and batch size. Also needs to be used with LTrainer.'
+    'Needs config: train/test/validation_split and batch_size. Also needs to be used with LTrainer.'
     def __init__(self, file_list, config, normalization_parameters=None, logging_level=logging.INFO):
         super(LDataset, self).__init__(file_list, normalization_parameters, logging_level)
         
@@ -21,9 +21,8 @@ class LDataset(DS, Dataset):
         
         
         split = lambda s: int(self.dataset.n_events * s) if s < 1 else int(s)
-        
         if 'kFold_max' in self.config and 'kFold_crnt' in self.config:
-                
+            
             if 'kFold_size' in self.config:
                 k_datalist=self.data_list[:self.config['kFold_size']]
             else:
@@ -46,6 +45,15 @@ class LDataset(DS, Dataset):
                     k_train+=vallist[i]
             #validiation group
             k_val=[self.data_list[i] for i in self.permutation][:n_val]
+            
+            n_test=len(k_test)
+            n_train=len(k_train)
+            
+            logging.info('%d training samples, %d validation samples, %d test samples received; %d ununsed',
+                    n_train, n_val, n_test, len(self.data_list) - n_train - n_val - n_test)
+            if n_train + n_val + n_test > self.dataset.n_events:
+                raise ValueError('Loader configuration exceeds number of data samples')
+            
             self.train_list=k_train
             self.val_list=k_val
             self.test_list=k_test
@@ -67,6 +75,8 @@ class LDataset(DS, Dataset):
                     n_test = split(self._test_split)
                 else:
                     n_test = len(self.data_list) - n_train - n_val
+            logging.info('%d training samples, %d validation samples, %d test samples received; %d ununsed',
+                    n_train, n_val, n_test, len(self.data_list) - n_train - n_val - n_test)
             self.train_list=dataset_shuffled[:n_train]
             self.val_list=dataset_shuffled[n_train:n_train+n_val]
             self.test_list=dataset_shuffled[n_train+n_val:][:n_test]

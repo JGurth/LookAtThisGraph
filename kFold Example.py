@@ -6,31 +6,31 @@ import numpy as np
 import torch
 from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
+from lookatthisgraph.nets.ConvNet import ConvNet
+
 
 
 FileLocation="Data/140000"
-width=128
-conv_depth=3
-lin_depth=5
 k_max=2    #=k von K-fold validation
-k_size=int(2e3)  #=size of K-fold sample
+k_size=int(2e3)  #=size of K-fold sample (aka Test+Train Split)
+train_set = Dataset([FileLocation])
 
 train_config = {
         'learning_rate': 7e-4,
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'dim': [width, conv_depth, lin_depth],
-        'train_split': 1e5,
-        'test_split': 2e3,
+        'train_split': 2e4, #unnecessary
+        'test_split': 2e3,  #unnecessary
         'batch_size': 512,
-        'max_epochs': 100,
+        'max_epochs': 40,
         'kFold_max' : k_max,
-        'kFold_size' : k_size
+        'kFold_size' : k_size,
+        'net': ConvNet,
+        'dataset': train_set
     }
               
-train_set = Dataset([FileLocation])
-train_config['dataset']=train_set
+
 
 
 
@@ -49,7 +49,10 @@ for k_crnt in range(k_max):
     
     prediction=torch.from_numpy(prediction)
     truth=torch.from_numpy(truth[train_config['training_target']].flatten())
-    avrg=torch.mean(torch.square(torch.sub(prediction, truth))).item()  #Average
+    if train_config['training_target']=='energy':
+        avrg=torch.mean(torch.div(torch.sub(prediction, truth), truth)).item()
+    else:
+        avrg=torch.mean(torch.square(torch.sub(prediction, truth))).item()  #Average
     result=torch.tensor([avrg])
     resultlist.append(result)
     

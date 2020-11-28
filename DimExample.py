@@ -7,6 +7,8 @@ import torch
 from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
 from datetime import datetime, timedelta
+from lookatthisgraph.utils.LDataset import LDataset
+from lookatthisgraph.utils.LTrainer import LTrainer
 
 FileLocation="Data/140000"
 train_config = {
@@ -19,8 +21,10 @@ train_config = {
         'batch_size': 64,
         'max_epochs': 100,
     }
-train_set = Dataset([FileLocation])
-train_config['dataset']=train_set
+#LDataset hängt von Config ab und muss deswegen in dieser Reihenfolge definiert werden:
+train_set = LDataset([FileLocation], train_config)
+train_config['dataset']=train_set 
+
 
 
 width=254
@@ -36,7 +40,7 @@ for lin_depth in range(10,40,10):
     train_config['dim']=[width, conv_depth, lin_depth]
     
     
-    trainer = Trainer(train_config)
+    trainer = LTrainer(train_config)
     trainer.train()
     trainer.load_best_model()
     start=datetime.utcnow()
@@ -46,7 +50,10 @@ for lin_depth in range(10,40,10):
     time=timedelta.total_seconds(end-start)/train_config['test_split']
     prediction=torch.from_numpy(prediction)
     truth=torch.from_numpy(truth[train_config['training_target']].flatten())
-    avrg=torch.mean(torch.square(torch.sub(prediction, truth))).item()  #Average
+    if train_config['training_target']=='energy':
+        avrg=torch.mean(torch.div(torch.sub(prediction, truth), truth)).item()
+    else:
+        avrg=torch.mean(torch.square(torch.sub(prediction, truth))).item()  #Average
     result=torch.tensor([avrg, time, width, conv_depth, lin_depth])
     resultlist.append(result)
     

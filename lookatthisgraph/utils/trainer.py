@@ -48,7 +48,7 @@ class Trainer:
             self.width=config['dim'][0]
             self.conv_depth=config['dim'][1]
             self.lin_depth=config['dim'][2]
-        net = config['net'] if 'net' in config else ConvNet(self._source_dim, self._target_dim, self._classification, self.width, self.conv_depth, self.lin_depth)
+        net = config['net'](self._source_dim, self._target_dim, self._classification, self.width, self.conv_depth, self.lin_depth) if 'net' in config else ConvNet(self._source_dim, self._target_dim, self._classification, self.width, self.conv_depth, self.lin_depth)
         self.model = net.to(self._device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=config['learning_rate'])
         if 'scheduling_step_size' in config and 'scheduling_gamma' in config:
@@ -248,9 +248,9 @@ class Trainer:
             'time_training_start': self._time_start,
             'permutation': self._train_perm,
             'best_model': self.state_dicts[np.argmin(self.validation_losses)],
-            'net_width' : self.width if 'net' in self.config else None,
-            'net_conv_depth' : self.conv_depth if 'net' in self.config else None,
-            'net_lin_depth' : self.lin_depth if 'net' in self.config else None,
+            'net_width' : self.width,
+            'net_conv_depth' : self.conv_depth,
+            'net_lin_depth' : self.lin_depth,
         }
         try:
             training_info['time_training_end'] = self._time_end
