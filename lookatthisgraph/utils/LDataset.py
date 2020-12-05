@@ -20,7 +20,7 @@ class LDataset(DS, Dataset):
         self._batch_size = config['batch_size']
         
         
-        split = lambda s: int(self.dataset.n_events * s) if s < 1 else int(s)
+        split = lambda s: int(self.n_events * s) if s < 1 else int(s)
         if 'kFold_max' in self.config and 'kFold_crnt' in self.config:
             
             if 'kFold_size' in self.config:
@@ -51,7 +51,7 @@ class LDataset(DS, Dataset):
             
             logging.info('%d training samples, %d validation samples, %d test samples received; %d ununsed',
                     n_train, n_val, n_test, len(self.data_list) - n_train - n_val - n_test)
-            if n_train + n_val + n_test > self.dataset.n_events:
+            if n_train + n_val + n_test > self.n_events:
                 raise ValueError('Loader configuration exceeds number of data samples')
             
             self.train_list=k_train

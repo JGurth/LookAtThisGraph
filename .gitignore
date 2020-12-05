@@ -4,3 +4,4 @@ tags
 .ipynb_checkpoints
 Data
 test.p
+*.p

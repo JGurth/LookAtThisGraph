@@ -9,6 +9,7 @@ from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.nets.SGConv import SGConvNet
 from lookatthisgraph.utils.LDataset import LDataset
 from lookatthisgraph.utils.LTrainer import LTrainer
+from lookatthisgraph.nets.ChebConv2 import ChebConvNet
 
 
 FileLocation="Data/140000"
@@ -26,7 +27,7 @@ train_config = {
         'max_epochs': 40,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
-        'net': SGConvNet
+        'net': ChebConvNet
     }
               
 
