@@ -10,7 +10,7 @@ from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.utils.model import Model
 from lookatthisgraph.utils.LDataset import LDataset
 from lookatthisgraph.utils.LTrainer import LTrainer
-from lookatthisgraph.nets.ConvNet import ConvNet
+from lookatthisgraph.nets.EnsembleNet import EnsembleNet
 
 FileLocation="Data/140000"
 
@@ -20,11 +20,11 @@ train_config = {
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'train_split': 1e5,
+        'train_split': 1e4,
         'test_split': 1e5,
         'batch_size': 512,
         'max_epochs': 40,
-        'Net': ConvNet
+        'Net': EnsembleNet
     }
 #LDataset hängt von Config ab und muss deswegen in dieser Reihenfolge definiert werden:
 train_set = LDataset([FileLocation], train_config)
