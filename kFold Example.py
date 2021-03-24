@@ -8,6 +8,7 @@ from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.nets.ConvNet import ConvNet
 from lookatthisgraph.nets.ChebConv2 import ChebConvNet
+import datetime as dt
 
 
 
@@ -21,8 +22,8 @@ train_config = {
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'train_split': 2e4, #unnecessary
-        'test_split': 2e3,  #unnecessary
+        'train_split': 2e4, #unnecessary/ignored
+        'test_split': 2e3,  #unnecessary/ignored
         'batch_size': 512,
         'max_epochs': 40,
         'kFold_max' : k_max,
@@ -61,3 +62,12 @@ for k_crnt in range(k_max):
 
 endresult=torch.mean(endresult).item()
 print('k-Fold final Accuracy:', endresult)
+filename="Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+file=open(filename, "w")
+file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)])
+file.close()
+
+
+
+
+

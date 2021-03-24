@@ -10,6 +10,8 @@ from lookatthisgraph.nets.SGConv import SGConvNet
 from lookatthisgraph.utils.LDataset import LDataset
 from lookatthisgraph.utils.LTrainer import LTrainer
 from lookatthisgraph.nets.ChebConv2 import ChebConvNet
+import datetime as dt
+
 
 
 FileLocation="Data/140000"
@@ -31,7 +33,7 @@ train_config = {
     }
               
 
-
+train_config('net')()
 
 
 resultlist=[]
@@ -63,3 +65,7 @@ for k_crnt in range(k_max):
 
 endresult=torch.mean(endresult).item()
 print('k-Fold final Accuracy:', endresult)
+filename="Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+file=open(filename, "w")
+file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)])
+file.close()
