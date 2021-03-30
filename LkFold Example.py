@@ -16,7 +16,7 @@ import datetime as dt
 
 FileLocation="Data/140000"
 k_max=2    #=k von K-fold validation
-k_size=int(2e3)  #=size of K-fold sample (aka Test+Train Split)
+k_size=int(1e3)  #=size of K-fold sample (aka Test+Train Split)
 
 train_config = {
         'learning_rate': 7e-4,
@@ -33,7 +33,6 @@ train_config = {
     }
               
 
-train_config('net')()
 
 
 resultlist=[]
@@ -61,10 +60,10 @@ for k_crnt in range(k_max):
     result=torch.tensor([avrg])
     resultlist.append(result)
     
-    endresult=torch.cat(resultlist, 0)  
+    endresult0=torch.cat(resultlist, 0)  
 
-endresult=torch.mean(endresult).item()
-STD=torch.std(endresult).item()
+endresult=torch.mean(endresult0).item()
+STD=torch.std(endresult0).item()
 print('k-Fold final Accuracy:', endresult)
 filename="Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")
