@@ -169,8 +169,8 @@ class Trainer:
             if self._plot:
                 self._plot_training()
             try:
-                if self.scheduler.get_lr()[0] != last_lr:
-                    last_lr = self.scheduler.get_lr()[0]
+                if self.scheduler.get_last_lr() != last_lr:
+                    last_lr = self.scheduler.get_last_lr() #### get_lr()[0]
                     logging.info('Learning rate changed to %f in epoch %d', last_lr, epoch)
 
                 self.scheduler.step()

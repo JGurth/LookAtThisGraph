@@ -7,7 +7,7 @@ import torch
 from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.nets.ConvNet import ConvNet
-from lookatthisgraph.nets.ChebConv2 import ChebConvNet
+from lookatthisgraph.nets.EnsembleNet import EnsembleNet
 import datetime as dt
 
 
@@ -28,7 +28,7 @@ train_config = {
         'max_epochs': 40,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
-        'net': ChebConvNet,
+        'net': EnsembleNet,
         'dataset': train_set
     }
               

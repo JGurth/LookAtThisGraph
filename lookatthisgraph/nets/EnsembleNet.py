@@ -27,7 +27,8 @@ class EnsembleNet(torch.nn.Module):
         self.pointfkt=torch.nn.ModuleList([DynamicEdgeConv(LNN([2*n_intermediate, n_intermediate]), 2, self.aggr) for i in range(self.point_depth-1)])
         
         
-        n_intermediate2 = 2*self.conv_depth*n_intermediate+self.point_depth*n_intermediate
+        n_intermediate2 = 2*self.conv_depth*n_intermediate+2*self.point_depth*n_intermediate
+        self.dim2=n_intermediate2
         self.batchnorm1 = BatchNorm1d(n_intermediate2)                      
         self.linearfkt=torch.nn.ModuleList([torch.nn.Linear(n_intermediate2, n_intermediate2) for i in range(self.lin_depth)])
         self.drop = torch.nn.ModuleList([torch.nn.Dropout(.3) for i in range(self.lin_depth)])                                    
@@ -43,26 +44,28 @@ class EnsembleNet(torch.nn.Module):
 
         x = F.leaky_relu(self.conv1(x, edge_index))
         x1 = torch.cat([gap(x, batch), gmp(x, batch)], dim=1)       
-        convlist=[x1]
+        convlist=[x1]   #dim = n_intermediate*2
         
         for f in range(self.conv_depth-1):
             x = F.leaky_relu(self.convfkt[f](x, edge_index))
             xi = torch.cat([gap(x, batch), gmp(x, batch)], dim=1)
             convlist.append(xi)
         
-        x = torch.cat(convlist, dim=1)
+        x = torch.cat(convlist, dim=1)   #dim = n_intermediate*2*conv_depth
         
         y=data.x
-        y=self.point1(y, batch)
+        y=self.point1(y, batch)  #dim=n_intermediate
         pointlist=[y]
         for f in range(self.point_depth-1):
             y=self.pointfkt[f](y, batch)
+            ####
             pointlist.append(y)
         
-        y=torch.cat(pointlist, dim=1)
+        y=torch.cat(pointlist, dim=1) #dim=n_intermediate*point_depth
+        y = torch.cat([gap(y, batch), gmp(y, batch)], dim=1)
+
         
         x=torch.cat([x, y], dim=1)
-        
 
         x = self.batchnorm1(x)
         for g in range(self.lin_depth):

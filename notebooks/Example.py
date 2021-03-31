@@ -20,11 +20,11 @@ train_config = {
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'train_split': 1e4,
+        'train_split': 1e3,
         'test_split': 1e5,
         'batch_size': 512,
         'max_epochs': 40,
-        'Net': EnsembleNet
+        'net': EnsembleNet
     }
 #LDataset hängt von Config ab und muss deswegen in dieser Reihenfolge definiert werden:
 train_set = LDataset([FileLocation], train_config)
