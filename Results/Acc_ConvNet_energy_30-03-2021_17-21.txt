@@ -1,0 +1,4 @@
+k-Fold final Accuracy: 0.2634539008140564
+k-Fold standart deviation: 0.18704091012477875
+k_max=10
+k_size=100000

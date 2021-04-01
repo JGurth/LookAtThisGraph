@@ -13,8 +13,8 @@ import datetime as dt
 
 
 FileLocation="Data/140000"
-k_max=2    #=k von K-fold validation
-k_size=int(2e3)  #=size of K-fold sample (aka Test+Train Split)
+k_max=10    #=k von K-fold validation
+k_size=int(1e5)  #=size of K-fold sample (aka Test+Train Split)
 train_set = Dataset([FileLocation])
 
 train_config = {
@@ -25,7 +25,7 @@ train_config = {
         'train_split': 2e4, #unnecessary/ignored
         'test_split': 2e3,  #unnecessary/ignored
         'batch_size': 512,
-        'max_epochs': 40,
+        'max_epochs': 60,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
         'net': EnsembleNet,
@@ -63,7 +63,7 @@ for k_crnt in range(k_max):
 endresult=torch.mean(endresult0).item()
 STD=torch.std(endresult0).item()
 print('k-Fold final Accuracy:', endresult)
-filename="Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+filename="Results/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")
 file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)])
 file.close()

@@ -37,7 +37,7 @@ if train_config['training_target']=='energy':
 else:
     avrg=torch.mean(torch.square(torch.sub(prediction, truth))).item()  #Average
 print('Accuracy:', avrg)
-filename="Short_Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+filename="Results/Short_Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")
 file.writelines(['Short Accuracy: '+str(avrg)+"\n"])
 file.close()
