@@ -15,11 +15,11 @@ train_config = {
         'learning_rate': 7e-4,
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
-        'training_target': 'energy',
+        'training_target': 'zenith',
         'train_split': 1e3,
-        'test_split': 1e5,
+        'test_split': 1e4,
         'batch_size': 512,
-        'max_epochs': 40,
+        'max_epochs': 10,
         'net': PointNet
     }
 #LDataset hängt von Config ab und muss deswegen in dieser Reihenfolge definiert werden:
@@ -35,7 +35,7 @@ truth=torch.from_numpy(truth[train_config['training_target']].flatten())
 if train_config['training_target']=='energy':
     avrg=torch.mean(torch.div(torch.sub(prediction, truth), truth)).item()
 else:
-    avrg=torch.mean(torch.square(torch.sub(prediction, truth))).item()  #Average
+    avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
 print('Accuracy:', avrg)
 filename="Results/Short_Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")

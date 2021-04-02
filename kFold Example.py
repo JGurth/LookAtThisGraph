@@ -16,6 +16,7 @@ FileLocation="Data/140000"
 k_max=10    #=k von K-fold validation
 k_size=int(1e5)  #=size of K-fold sample (aka Test+Train Split)
 train_set = Dataset([FileLocation])
+SaveNet=True
 
 train_config = {
         'learning_rate': 7e-4,
@@ -54,11 +55,16 @@ for k_crnt in range(k_max):
     if train_config['training_target']=='energy':
         avrg=torch.mean(torch.div(torch.sub(prediction, truth), truth)).item()
     else:
-        avrg=torch.mean(torch.square(torch.sub(prediction, truth))).item()  #Average
+        avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
     result=torch.tensor([avrg])
     resultlist.append(result)
     
     endresult0=torch.cat(resultlist, 0)  
+    
+    if SaveNet:
+        trainer.save_network_info("Results/Net_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".p")
+
+    
 
 endresult=torch.mean(endresult0).item()
 STD=torch.std(endresult0).item()
