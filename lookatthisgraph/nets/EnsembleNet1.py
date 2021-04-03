@@ -24,7 +24,7 @@ class EnsembleNet(torch.nn.Module):
         self.convfkt=torch.nn.ModuleList([TAGConv(n_intermediate, n_intermediate, 2) for i in range(self.conv_depth-1)])
         
         self.point1 =  DynamicEdgeConv(LNN([2*n_features, n_intermediate, n_intermediate]), 1, self.aggr)
-        self.pointfkt=torch.nn.ModuleList([DynamicEdgeConv(LNN([2*n_intermediate, n_intermediate]), 2, self.aggr) for i in range(self.point_depth-1)])
+        self.pointfkt=torch.nn.ModuleList([DynamicEdgeConv(LNN([2*n_intermediate, n_intermediate]), 1, self.aggr) for i in range(self.point_depth-1)])
         
         
         n_intermediate2 = 2*self.conv_depth*n_intermediate+2*self.point_depth*n_intermediate
