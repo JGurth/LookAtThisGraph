@@ -14,7 +14,7 @@ import datetime as dt
 
 FileLocation="Data/140000"
 k_max=10    #=k von K-fold validation
-k_size=int(1e5)  #=size of K-fold sample (aka Test+Train Split)
+k_size=int(2e5)  #=size of K-fold sample (aka Test+Train Split)
 train_set = Dataset([FileLocation])
 SaveNet=True
 
@@ -25,11 +25,11 @@ train_config = {
         'training_target': 'energy',
         'train_split': 2e4, #unnecessary/ignored
         'test_split': 2e3,  #unnecessary/ignored
-        'batch_size': 512,
-        'max_epochs': 60,
+        'batch_size': 1024,
+        'max_epochs': 100,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
-        'net': EnsembleNet,
+        'net': ConvNet,
         'dataset': train_set
     }
               
