@@ -62,7 +62,7 @@ for k_crnt in range(k_max):
     endresult0=torch.cat(resultlist, 0)  
     
     if SaveNet:
-        trainer.save_network_info("Results/Net_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".p")
+        trainer.save_network_info("SavedNets/Net_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".p")
 
     
 
@@ -71,7 +71,7 @@ STD=torch.std(endresult0).item()
 print('k-Fold final Accuracy:', endresult)
 filename="Results/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")
-file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)])
+file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"/n", "Epochs="+str(train_config['max_epochs'])])
 file.close()
 
 
