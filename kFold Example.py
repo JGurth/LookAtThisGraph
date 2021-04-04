@@ -7,7 +7,9 @@ import torch
 from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.nets.ConvNet import ConvNet
-from lookatthisgraph.nets.EnsembleNet1 import EnsembleNet
+from lookatthisgraph.nets.EnsembleNet1 import EnsembleNet1
+from lookatthisgraph.nets.EnsembleNet import EnsembleNet
+from lookatthisgraph.nets.EnsembleNet3 import EnsembleNet3
 import datetime as dt
 
 
@@ -29,7 +31,7 @@ train_config = {
         'max_epochs': 60,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
-        'net': EnsembleNet,
+        'net': EnsembleNet3,
         'dataset': train_set
     }
               
@@ -71,7 +73,7 @@ STD=torch.std(endresult0).item()
 print('k-Fold final Accuracy:', endresult)
 filename="Results/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")
-file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"/n", "Epochs="+str(train_config['max_epochs'])+"/n", "Batch_Size="+str(train_config['batch_size'])])
+file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])])
 file.close()
 
 

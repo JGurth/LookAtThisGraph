@@ -7,9 +7,9 @@ from torch.nn import BatchNorm1d
 from lookatthisgraph.utils.LNN import LNN
 
 
-class EnsembleNet1(torch.nn.Module):
+class EnsembleNet3(torch.nn.Module):
     def __init__(self, n_features, n_labels, classification=False, width=128, conv_depth=3, lin_depth=5, aggr='max', point_depth=3):
-        super(EnsembleNet1, self).__init__()
+        super(EnsembleNet3, self).__init__()
         self.classification = classification
         self.n_features = n_features
         self.n_labels = n_labels
@@ -23,8 +23,8 @@ class EnsembleNet1(torch.nn.Module):
         self.conv1 = TAGConv(self.n_features, n_intermediate, 2)            
         self.convfkt=torch.nn.ModuleList([TAGConv(n_intermediate, n_intermediate, 2) for i in range(self.conv_depth-1)])
         
-        self.point1 =  DynamicEdgeConv(LNN([2*n_features, n_intermediate, n_intermediate]), 1, self.aggr)
-        self.pointfkt=torch.nn.ModuleList([DynamicEdgeConv(LNN([2*n_intermediate, n_intermediate]), 1, self.aggr) for i in range(self.point_depth-1)])
+        self.point1 =  DynamicEdgeConv(LNN([2*n_features, n_intermediate, n_intermediate]), 3, self.aggr)
+        self.pointfkt=torch.nn.ModuleList([DynamicEdgeConv(LNN([2*n_intermediate, n_intermediate]), 3, self.aggr) for i in range(self.point_depth-1)])
         
         
         n_intermediate2 = 2*self.conv_depth*n_intermediate+2*self.point_depth*n_intermediate
