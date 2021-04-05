@@ -10,6 +10,7 @@ from lookatthisgraph.nets.ConvNet import ConvNet
 from lookatthisgraph.nets.EnsembleNet1 import EnsembleNet1
 from lookatthisgraph.nets.EnsembleNet import EnsembleNet
 from lookatthisgraph.nets.EnsembleNet3 import EnsembleNet3
+from lookatthisgraph.nets.EnsembkeNetL import EnsembleNetL
 import datetime as dt
 
 
@@ -31,7 +32,7 @@ train_config = {
         'max_epochs': 60,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
-        'net': EnsembleNet3,
+        'net': EnsembleNetL,
         'dataset': train_set
     }
               
@@ -55,7 +56,7 @@ for k_crnt in range(k_max):
     prediction=torch.from_numpy(prediction)
     truth=torch.from_numpy(truth[train_config['training_target']].flatten())
     if train_config['training_target']=='energy':
-        avrg=torch.mean(torch.div(torch.sub(prediction, truth), truth)).item()
+        avrg=torch.mean(torch.abs(torch.div(torch.sub(prediction, truth), truth))).item()
     else:
         avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
     result=torch.tensor([avrg])
