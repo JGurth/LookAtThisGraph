@@ -29,7 +29,14 @@ train_config['dataset']=train_set
 trainer = LTrainer(train_config)
 trainer.train()
 trainer.load_best_model()
+
+start=dt.datetime.utcnow()
 prediction, truth = trainer.evaluate_test_samples()
+
+end=dt.datetime.utcnow()
+time=dt.timedelta.total_seconds(end-start)/train_config['test_split']
+
+
 prediction=torch.from_numpy(prediction)
 truth=torch.from_numpy(truth[train_config['training_target']].flatten())
 if train_config['training_target']=='energy':
@@ -37,7 +44,7 @@ if train_config['training_target']=='energy':
 else:
     avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
 print('Accuracy:', avrg)
-filename="Results/Short_Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+filename="Results/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")
-file.writelines(['Short Accuracy: '+str(avrg)+"\n"])
+file.writelines(['Accuracy: '+str(avrg)+"\n", "Training_Size="+str(train_config["train_split"])+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
 file.close()

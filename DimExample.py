@@ -6,29 +6,36 @@ import numpy as np
 import torch
 from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
-from datetime import datetime, timedelta
+import datetime as dt
 from lookatthisgraph.utils.LDataset import LDataset
 from lookatthisgraph.utils.LTrainer import LTrainer
+from lookatthisgraph.nets.EnsembleNet import EnsembleNet
+from lookatthisgraph.nets.ConvNet import ConvNet
 
 FileLocation="Data/140000"
+SaveNet=True
+
 train_config = {
         'learning_rate': 7e-4,
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'train_split': 2e3,
+        'train_split':1e3,
         'test_split': 1e5,
         'batch_size': 64,
-        'max_epochs': 100,
+        'max_epochs': 60,
+        'net' : EnsembleNet
     }
 #LDataset hängt von Config ab und muss deswegen in dieser Reihenfolge definiert werden:
-train_set = LDataset([FileLocation], train_config)
+#train_set = LDataset([FileLocation], train_config)
+train_set = Dataset([FileLocation])
 train_config['dataset']=train_set 
 
 
 
-width=254
-conv_depth=6
+width=128
+conv_depth=3
+point_depth=3
 lin_depth=5
 resultlist=[]
 #for width in range(64, 1025, 128):
@@ -37,40 +44,42 @@ for lin_depth in range(10,40,10):
     
 #TRY/EXCEPT
 
-    train_config['dim']=[width, conv_depth, lin_depth]
+    train_config['dim']=[width, conv_depth, point_depth, lin_depth]
     
     
-    trainer = LTrainer(train_config)
+    #trainer = LTrainer(train_config)
+    trainer = Trainer(train_config)
     trainer.train()
     trainer.load_best_model()
-    start=datetime.utcnow()
+    start=dt.datetime.utcnow()
     prediction, truth = trainer.evaluate_test_samples()
     
-    end=datetime.utcnow()
-    time=timedelta.total_seconds(end-start)/train_config['test_split']
+    end=dt.datetime.utcnow()
+    time=dt.timedelta.total_seconds(end-start)/train_config['test_split']
+    
     prediction=torch.from_numpy(prediction)
     truth=torch.from_numpy(truth[train_config['training_target']].flatten())
     if train_config['training_target']=='energy':
-        avrg=torch.mean(torch.div(torch.sub(prediction, truth), truth)).item()
+        avrg=torch.mean(torch.abs(torch.div(torch.sub(prediction, truth), truth))).item()
     else:
-        avrg=torch.mean(torch.square(torch.sub(prediction, truth))).item()  #Average
-    result=torch.tensor([avrg, time, width, conv_depth, lin_depth])
-    resultlist.append(result)
+        avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
+ 
     
-    endresult=torch.cat(resultlist, 0)  
-    #Jede Zeile enthält eine Dimension mit (Accuracy, TrainTime [s], Width, Convolutional Depth, Linear Depth)
-endresult.view(-1, 5)
-print(endresult)
+    if SaveNet:
+        trainer.save_network_info("SavedNets/Net_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".p")
 
-#plt.figure()
-#plt.plot(np.arange(len(trainer.train_losses)), trainer.train_losses, label='Training loss')
-#plt.plot(np.arange(len(trainer.train_losses)), trainer.validation_losses, label='Validation loss')
-#plt.xlabel('Epoch')
-#plt.ylabel('Loss')
-#plt.yscale('log')
-#plt.legend()
-#plt.show()
     
+    print('Accuracy:', str(avrg))
+    filename="Results/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+    file=open(filename, "w")
+    file.writelines(['Accuracy: '+str(avrg)+"\n", 'Width='+str(width)+"\n", 'Conv_Depth='+str(conv_depth)+"\n", "Point_Depth="+str(point_depth)+"\n", 'Linear_Depth='+str(lin_depth)+"\n", "Training_Size="+str(train_config["train_split"])+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
+    file.close()
+    
+    
+    
+    
+
+
 
 
 

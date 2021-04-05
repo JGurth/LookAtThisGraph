@@ -8,7 +8,7 @@ from lookatthisgraph.utils.LNN import LNN
 
 
 class EnsembleNet(torch.nn.Module):
-    def __init__(self, n_features, n_labels, classification=False, width=128, conv_depth=3, lin_depth=5, aggr='max', point_depth=3):
+    def __init__(self, n_features, n_labels, classification=False, width=128, conv_depth=3, point_depth=3, lin_depth=5, aggr='max'):
         super(EnsembleNet, self).__init__()
         self.classification = classification
         self.n_features = n_features

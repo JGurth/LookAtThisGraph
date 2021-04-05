@@ -51,7 +51,11 @@ for k_crnt in range(k_max):
     trainer = Trainer(train_config)
     trainer.train()
     trainer.load_best_model()
+    start=dt.datetime.utcnow()
     prediction, truth = trainer.evaluate_test_samples()
+    
+    end=dt.datetime.utcnow()
+    time=dt.timedelta.total_seconds(end-start)/(k_size/k_max) 
     
     prediction=torch.from_numpy(prediction)
     truth=torch.from_numpy(truth[train_config['training_target']].flatten())
@@ -74,7 +78,7 @@ STD=torch.std(endresult0).item()
 print('k-Fold final Accuracy:', endresult)
 filename="Results/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")
-file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])])
+file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
 file.close()
 
 

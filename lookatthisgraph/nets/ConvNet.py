@@ -7,7 +7,7 @@ from torch.nn import BatchNorm1d, PReLU
 import torch_geometric.nn as NN
 
 class ConvNet(torch.nn.Module):
-    def __init__(self, n_features, n_labels, classification=False, width=128, conv_depth=3, lin_depth=5):
+    def __init__(self, n_features, n_labels, classification=False, width=128, conv_depth=3, point_depth=3, lin_depth=5):
         super(ConvNet, self).__init__()
         self.classification = classification
         self.n_features = n_features
