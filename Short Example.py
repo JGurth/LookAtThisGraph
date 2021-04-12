@@ -4,7 +4,7 @@ from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.utils.LDataset import LDataset
 from lookatthisgraph.utils.LTrainer import LTrainer
-from lookatthisgraph.nets.PointConv import PointNet
+from lookatthisgraph.nets.EnsembleNet import EnsembleNet
 import datetime as dt
 
 
@@ -16,11 +16,11 @@ train_config = {
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'zenith',
-        'train_split': 1e3,
+        'train_split': 1e4,
         'test_split': 1e4,
-        'batch_size': 512,
+        'batch_size': 1024,
         'max_epochs': 10,
-        'net': PointNet
+        'net': EnsembleNet
     }
 #LDataset hängt von Config ab und muss deswegen in dieser Reihenfolge definiert werden:
 train_set = LDataset([FileLocation], train_config)
@@ -37,7 +37,7 @@ if train_config['training_target']=='energy':
 else:
     avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
 print('Accuracy:', avrg)
-filename="Results/Short_Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+filename="Results/TShort_Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")
 file.writelines(['Short Accuracy: '+str(avrg)+"\n"])
 file.close()

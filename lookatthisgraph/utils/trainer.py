@@ -29,6 +29,7 @@ class Trainer:
         self.reshuffle()
         self.width=128
         self.conv_depth=3
+        self.point_depth=3
         self.lin_depth=5
 
         self._batch_size = config['batch_size']
@@ -48,7 +49,7 @@ class Trainer:
             self.width=config['dim'][0]
             self.conv_depth=config['dim'][1]
             self.lin_depth=config['dim'][2]
-        net = config['net'](self._source_dim, self._target_dim, self._classification, self.width, self.conv_depth, self.lin_depth) if 'net' in config else ConvNet(self._source_dim, self._target_dim, self._classification, self.width, self.conv_depth, self.lin_depth)
+        net = config['net'](self._source_dim, self._target_dim, self._classification, self.width, self.conv_depth, self.point_depth, self.lin_depth) if 'net' in config else ConvNet(self._source_dim, self._target_dim, self._classification, self.width, self.conv_depth, self.lin_depth)
         self.model = net.to(self._device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=config['learning_rate'])
         if 'scheduling_step_size' in config and 'scheduling_gamma' in config:
