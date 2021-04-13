@@ -26,11 +26,10 @@ train_config = {
         'max_epochs': 40,
         'net': EnsembleNet
     }
-#LDataset hängt von Config ab und muss deswegen in dieser Reihenfolge definiert werden:
-train_set = LDataset([FileLocation], train_config)
+train_set = Dataset([FileLocation])
 train_config['dataset']=train_set
 
-trainer = LTrainer(train_config)
+trainer = Trainer(train_config)
 trainer.train()
 
 plt.figure()

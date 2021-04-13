@@ -13,14 +13,14 @@ from lookatthisgraph.nets.EnsembleNet import EnsembleNet
 from lookatthisgraph.nets.ConvNet import ConvNet
 
 FileLocation="Data/140000"
-SaveNet=True
+SaveNet=False
 
 train_config = {
         'learning_rate': 7e-4,
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'train_split':1e3,
+        'train_split':2e4,
         'test_split': 1e5,
         'batch_size': 64,
         'max_epochs': 60,

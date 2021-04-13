@@ -29,6 +29,7 @@ class Trainer:
         self.reshuffle()
         self.width=128
         self.conv_depth=3
+        self.point_depth=3
         self.lin_depth=5
 
         self._batch_size = config['batch_size']
