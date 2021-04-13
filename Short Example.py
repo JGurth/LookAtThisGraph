@@ -1,13 +1,14 @@
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+mpl.rcParams['figure.figsize'] = (9, 7)
+mpl.rcParams['font.size'] = 15
 import numpy as np
 import torch
 from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.utils.LDataset import LDataset
 from lookatthisgraph.utils.LTrainer import LTrainer
-<<<<<<< HEAD
 from lookatthisgraph.nets.PointConv import PointNet
-=======
->>>>>>> refs/remotes/latg/master
 from lookatthisgraph.nets.EnsembleNet import EnsembleNet
 import datetime as dt
 
@@ -54,3 +55,6 @@ filename="Results/TShort_Acc_"+train_config['net'](1,1).__class__.__name__+"_"+t
 file=open(filename, "w")
 file.writelines(['Accuracy: '+str(avrg)+"\n", "Training_Size="+str(train_config["train_split"])+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
 file.close()
+
+
+

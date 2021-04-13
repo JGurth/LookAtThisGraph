@@ -20,7 +20,7 @@ train_config = {
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'train_split': 1e3,
+        'train_split': 2e4,
         'test_split': 1e5,
         'batch_size': 512,
         'max_epochs': 40,
