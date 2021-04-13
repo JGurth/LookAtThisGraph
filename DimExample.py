@@ -13,7 +13,9 @@ from lookatthisgraph.nets.EnsembleNet import EnsembleNet
 from lookatthisgraph.nets.ConvNet import ConvNet
 
 FileLocation="Data/140000"
+
 SaveNet=False
+
 
 train_config = {
         'learning_rate': 7e-4,
@@ -45,22 +47,23 @@ for width in [128, 256]: #range(128,513,128):
 #TRY/EXCEPT
 
     train_config['dim']=[width, conv_depth, point_depth, lin_depth]
-
+    #trainer = LTrainer(train_config)
     trainer = Trainer(train_config)
     trainer.train()
     trainer.load_best_model()
     start=dt.datetime.utcnow()
     prediction, truth = trainer.evaluate_test_samples()
+    
     end=dt.datetime.utcnow()
     time=dt.timedelta.total_seconds(end-start)/train_config['test_split']
+    
     prediction=torch.from_numpy(prediction)
     truth=torch.from_numpy(truth[train_config['training_target']].flatten())
     if train_config['training_target']=='energy':
-        avrg=torch.mean(torch.div(torch.sub(prediction, truth), truth)).item()
+        avrg=torch.mean(torch.abs(torch.div(torch.sub(prediction, truth), truth))).item()
     else:
         avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
-    
-        
+       
     if SaveNet:
         trainer.save_network_info("SavedNets/TestNet_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".p")
 
@@ -71,9 +74,7 @@ for width in [128, 256]: #range(128,513,128):
     file.writelines(['Accuracy: '+str(avrg)+"\n", 'Width='+str(width)+"\n", 'Conv_Depth='+str(conv_depth)+"\n", "Point_Depth="+str(point_depth)+"\n", 'Linear_Depth='+str(lin_depth)+"\n", "Training_Size="+str(train_config["train_split"])+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
     file.close()
     
-    
-    
-    
+
 
 
 
