@@ -54,7 +54,7 @@ for k_crnt in range(k_max):
     prediction=torch.from_numpy(prediction)
     truth=torch.from_numpy(truth[train_config['training_target']].flatten())
     if train_config['training_target']=='energy':
-        avrg=torch.mean(torch.div(torch.sub(prediction, truth), truth)).item()
+        avrg=torch.mean(torch.abs(torch.sub(prediction, truth))).item()
     else:
         avrg=torch.mean(torch.square(torch.sub(prediction, truth))).item()  #Average
     result=torch.tensor([avrg])

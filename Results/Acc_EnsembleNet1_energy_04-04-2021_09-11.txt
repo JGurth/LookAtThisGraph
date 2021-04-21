@@ -1,6 +1,0 @@
-k-Fold final Accuracy: 0.23128993809223175
-k-Fold standart deviation: 0.19624823331832886
-k_max=10
-k_size=100000
-Epochs=60
-Batch_Size=1024

@@ -22,7 +22,7 @@ train_config = {
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'train_split':5e4,
+        'train_split':1e5,
         'test_split': 1e5,
         'batch_size': 1024,
         'max_epochs': 60,
@@ -42,7 +42,7 @@ lin_depth=5
 resultlist=[]
 #for width in range(64, 1025, 128):
     #for conv_depth in range(2, 15, 2):
-for width in [128, 256]: #range(128,513,128):
+for lin_depth in [3, 7, 9]: #range(128,513,128):
     
 #TRY/EXCEPT
 
@@ -60,7 +60,7 @@ for width in [128, 256]: #range(128,513,128):
     prediction=torch.from_numpy(prediction)
     truth=torch.from_numpy(truth[train_config['training_target']].flatten())
     if train_config['training_target']=='energy':
-        avrg=torch.mean(torch.abs(torch.div(torch.sub(prediction, truth), truth))).item()
+        avrg=torch.mean(torch.abs(torch.sub(prediction, truth))).item()
     else:
         avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
        
@@ -69,7 +69,7 @@ for width in [128, 256]: #range(128,513,128):
 
     
     print('Accuracy:', str(avrg))
-    filename="Results/TestAcc_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+    filename="Results/EnsembleSmall/TestAcc_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
     file=open(filename, "w")
     file.writelines(['Accuracy: '+str(avrg)+"\n", 'Width='+str(width)+"\n", 'Conv_Depth='+str(conv_depth)+"\n", "Point_Depth="+str(point_depth)+"\n", 'Linear_Depth='+str(lin_depth)+"\n", "Training_Size="+str(train_config["train_split"])+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
     file.close()
