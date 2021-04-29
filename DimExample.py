@@ -42,7 +42,7 @@ lin_depth=5
 resultlist=[]
 #for width in range(64, 1025, 128):
     #for conv_depth in range(2, 15, 2):
-for lin_depth in [3, 7, 9]: #range(128,513,128):
+for point_depth in [4, 3, 2, 2, 1]: #range(128,513,128):
     
 #TRY/EXCEPT
 

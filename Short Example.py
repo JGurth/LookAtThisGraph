@@ -18,7 +18,7 @@ import datetime as dt
 
 FileLocation="Data/140000"
 
-for i in [256, 512, 1024, 2048]:
+for i in [256, 2560, 3072]:
 	train_config = {
 	        'learning_rate': 7e-4,
 	        'scheduling_step_size': 30,        

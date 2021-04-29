@@ -1,9 +1,0 @@
-Accuracy: 0.2761784493923187
-Width=128
-Conv_Depth=3
-Point_Depth=3
-Linear_Depth=5
-Training_Size=50000.0
-Epochs=60
-Batch_Size=1024
-Time=0.00077279241
