@@ -39,7 +39,7 @@ width=128
 conv_depth=3
 point_depth=3
 lin_depth=5
-resultlist=[]
+
 #for width in range(64, 1025, 128):
     #for conv_depth in range(2, 15, 2):
 for point_depth in [4, 3, 2, 2, 1]: #range(128,513,128):
@@ -65,7 +65,7 @@ for point_depth in [4, 3, 2, 2, 1]: #range(128,513,128):
         avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
        
     if SaveNet:
-        trainer.save_network_info("SavedNets/TestNet_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".p")
+        trainer.save_network_info("SavedNets/Net_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+str(avrg)+".p")
 
     
     print('Accuracy:', str(avrg))

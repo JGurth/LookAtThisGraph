@@ -5,3 +5,5 @@ k_size=100000
 Epochs=60
 Batch_Size=512
 Time=0.00030462265
+ConvHops=2
+PointHops=1
