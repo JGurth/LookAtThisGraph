@@ -42,12 +42,12 @@ train_config = {
 
 
 
-width=32 #?
-conv_depth=2 #1?
+width=128 #?
+conv_depth=3 #1?
 point_depth=3 #4,3,2,1?
 lin_depth=5 #1,7,8,9
 
-for point_depth in [4, 3, 2, 1]:
+for conv_depth in [1, 2, 3, 4]:
 
     resultlist=[]
     train_config['dim']=[width, conv_depth, point_depth, lin_depth]
