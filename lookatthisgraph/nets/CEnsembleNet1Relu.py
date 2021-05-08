@@ -7,9 +7,9 @@ from torch.nn import BatchNorm1d
 from lookatthisgraph.utils.LNN import LNN
 
 
-class CEnsembleNet1(torch.nn.Module):
-    def __init__(self, n_features, n_labels, classification=False, width=128, conv_depth=3, point_depth=3, lin_depth=5, aggr='max'):
-        super(CEnsembleNet1, self).__init__()
+class CEnsembleNet1Relu(torch.nn.Module):
+    def __init__(self, n_features, n_labels, classification=False, width=128, conv_depth=3, point_depth=3, lin_depth=5, aggr='max'): #max, add, mean
+        super(CEnsembleNet1Relu, self).__init__()
         self.classification = classification
         self.n_features = n_features
         self.n_labels = n_labels
@@ -54,10 +54,10 @@ class CEnsembleNet1(torch.nn.Module):
         x = torch.cat(convlist, dim=1)   #dim = n_intermediate*2*conv_depth
         
         y=data.x
-        y=self.point1(y, batch)  #dim=n_intermediate
+        y=F.leaky_relu(self.point1(y, batch))  #dim=n_intermediate
         pointlist=[y]
         for f in range(self.point_depth-1):
-            y=self.pointfkt[f](y, batch)
+            y=F.leaky_relu(self.pointfkt[f](y, batch))
             ####
             pointlist.append(y)
         

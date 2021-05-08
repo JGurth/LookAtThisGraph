@@ -1,0 +1,7 @@
+k-Fold final Accuracy: 0.2316376268863678
+k-Fold standart deviation: 0.007297706324607134
+k_max=4
+k_size=100000
+Epochs=40
+Batch_Size=3072
+Time=0.00025649564
