@@ -2,16 +2,16 @@ import matplotlib.pyplot as plt
 
 
 
-#Batchsize (CEnsemble1, 100k, 60 Epochs); 
-# !!! Evtl kFold !!!
-Batchsize=[256, 512, 1024, 2048, 2560, 3072] #Batchsize
-BatchAcc=[0.335, 0.24, 0.234, 0.231, 0.278, 0.246] #Acc
+#Batchsize (CEnsemble1, 100k, 40 Epochs); 
+Batchsize=[256, 512, 1024, 1536, 2048, 2560] #Batchsize
+BatchAcc=[0.252, 0.234, 0.232, 0.239, 0.251, 0.253] #Acc
+BatchSTD=[0.021, 0.003, 0.004, 0.015, 0.022, 0.044]
 
 
 
-#Ensemble vs pure Pointnet vs Basic CEnsemble (100k, 60 Epochs, 512 Batch)
-NetsAcc=[0.252, 0.254, 0.246] #Acc
-NatsSTD=[0.004, 0.003, 0.011] #STD
+#Ensemble vs pure Pointnet vs Basic CEnsemble vs CEnsembleRelu (100k, 60 Epochs, 512 Batch)
+NetsAcc=[0.252, 0.254, 0.246, 0.243] #Acc
+NetsSTD=[0.004, 0.003, 0.011, 0.020] #STD
 
 
 
@@ -56,28 +56,28 @@ CEnConvSTD=[0.012, 0.006, 0.018] #STD
 #CEnsemble ConvDepth (CEnsemble1, 100k, 40 Epochs, 512 Batch) 
 
 CEnConv=[1, 2, 3, 4, 6]
-CEnConvAcc=[0.235, 0.235, 0.237, 0.246, 0.336] #acc
-CEnConvSTD=[0.006, 0.005, 0.008, 0.024, 0.2] #STD
+CEnConvAcc=[0.235, 0.237, 0.235, 0.232, 0.248, 0.336] #acc
+CEnConvSTD=[0.003, 0.006, 0.006, 0.004, 0.027, 0.205] #STD
 
 
 #CEnsemble LinDepth (CEnsemble1, 100k, 40 Epochs, 512 Batch) 
 
-CEnLin=[1, 2, 3, 4, 6, 7, 8, 9]
-CEnLinAcc=[0.231, 0.235, 0.241, 0.232, 0.231, 0.229, 0.231, 0.231]
-CEnLinSTD=[0.003, 0.005, 0.005, 0.003, 0.004, 0.002, 0.004, 0.004]
+CEnLin=[1, 2, 3, 4, 6, 7, 9]
+CEnLinAcc=[0.236, 0.235, 0.241, 0.232, 0.231, 0.235, 0.402]
+CEnLinSTD=[0.006, 0.005, 0.005, 0.003, 0.004, 0.007, 0.255]
 
 
 #CEnsemble PointDepth (CEnsemble1, 100k, 40 Epochs, 512 Batch) 
 
-CEnPoint=[1, 2, 3, 4, 6]
-CEnPointAcc=[0.235, 0.233, 0.231, 0.232, 0.262] #acc
-CEnPointSTD=[0.005, 0.006, 0.005, 0.004, 0.056] #STD
+CEnPoint=[1, 2, 3, 4, 6] #1, 5
+CEnPointAcc=[0.229, 0.234, 0.232, 0.233, 0.262] #acc
+CEnPointSTD=[0.003, 0.007, 0.005, 0.005, 0.056] #STD
 
 
-#CEnsemble Width (CEnsemble1, 100k, 40 Epochs, 512 Batch) !!
-CEnWidth=[256, 128, 64, 32, 16]
-CEnWidthAcc=[0.232, 0.232, 0.233, 0.230, 0.238]
-CEnWidthSTD=[0.004, 0.005, 0.002, 0.002, 0.015]
+#CEnsemble Width (CEnsemble1, 100k, 40 Epochs, 512 Batch) 
+CEnWidth=[256, 128, 64, 32, 16, 12, 8, 4]
+CEnWidthAcc=[0.232, 0.232, 0.233, 0.230, 0.238, 0.246, 0.241, 0.260]
+CEnWidthSTD=[0.004, 0.005, 0.002, 0.002, 0.015, 0.028, 0.009, 0.018]
 
 
 x=CEnWidth
@@ -90,13 +90,14 @@ y=CEnWidthAcc
 
 
 
-
+plt.style.use("seaborn")
 
 
 plt.figure()
 plt.plot(x, y, "ro", markersize=3)
 plt.xlabel('')
 plt.ylabel('Log(E')
+plt.xscale("log")
 #plt.yscale('log')
 plt.legend()
 plt.show()
