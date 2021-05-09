@@ -22,7 +22,7 @@ FileLocation="Data/140000"
 k_max=5    #=k von K-fold validation
 k_size=int(1e5)  #=size of K-fold sample (aka Test+Train Split)
 train_set = Dataset([FileLocation])
-SaveNet=False
+SaveNet=True
 
 train_config = {
         'learning_rate': 7e-4,
