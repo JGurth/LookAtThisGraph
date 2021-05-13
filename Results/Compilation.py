@@ -69,9 +69,9 @@ CEnLinSTD=[0.006, 0.005, 0.005, 0.003, 0.004, 0.007, 0.255]
 
 #CEnsemble PointDepth (CEnsemble1, 100k, 40 Epochs, 512 Batch) 
 
-CEnPoint=[1, 2, 3, 4, 6] #1, 5
-CEnPointAcc=[0.229, 0.234, 0.232, 0.233, 0.262] #acc
-CEnPointSTD=[0.003, 0.007, 0.005, 0.005, 0.056] #STD
+CEnPoint=[1, 2, 3, 4, 5, 6] #1, 5
+CEnPointAcc=[0.229, 0.234, 0.232, 0.233, 0.268, 0.262] #acc
+CEnPointSTD=[0.003, 0.007, 0.005, 0.005, 0.060, 0.056] #STD
 
 
 #CEnsemble Width (CEnsemble1, 100k, 40 Epochs, 512 Batch) 
