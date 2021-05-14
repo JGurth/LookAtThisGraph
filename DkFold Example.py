@@ -47,7 +47,7 @@ conv_depth=3
 point_depth=3
 lin_depth=5
 
-for width in [512, 1024]:
+for width in [512]:
 
     resultlist=[]
     train_config['dim']=[width, conv_depth, point_depth, lin_depth]
@@ -85,7 +85,7 @@ for width in [512, 1024]:
     endresult=torch.mean(endresult0).item()
     STD=torch.std(endresult0).item()
     print('k-Fold final Accuracy:', endresult)
-    filename="Results/CEnsemble/Width/Acc2_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+    filename="Results/CEnsemble/Width/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
     file=open(filename, "w")
     file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", 'Width='+str(width)+"\n", 'Conv_Depth='+str(conv_depth)+"\n", "Point_Depth="+str(point_depth)+"\n", 'Linear_Depth='+str(lin_depth)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
     file.close()
