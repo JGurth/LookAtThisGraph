@@ -47,7 +47,7 @@ conv_depth=4 #3
 point_depth=1 #3
 lin_depth=6 #5
 
-for conv_depth in [1, 2, 3, 4, 5]:
+for conv_depth in [6, 7]:
 
     resultlist=[]
     train_config['dim']=[width, conv_depth, point_depth, lin_depth]
