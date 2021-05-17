@@ -51,6 +51,6 @@ def LocalAcc(Net, DataLocation="Data/140000", nblocks=20):
     plt.xlabel('Energy [Log(GeV)]')
     plt.xscale("log")
     plt.ylabel('Accuracy')
-    plt.show()
+    plt.savefig("Plots/AccPlot_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M"), format='pdf')
     plt.savefig("Plots/AccPlot_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M"), format='png')
 

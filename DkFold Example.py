@@ -87,7 +87,7 @@ for point_depth in [2, 4, 6]:
     print('k-Fold final Accuracy:', endresult)
     filename="Results/CEnsemble/Point/CAcc_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
     file=open(filename, "w")
-    file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", 'Width='+str(width)+"\n", 'Conv_Depth='+str(conv_depth)+"\n", "Point_Depth="+str(point_depth)+"\n", 'Linear_Depth='+str(lin_depth)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
+    file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "Values: "+str(endresult0)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", 'Width='+str(width)+"\n", 'Conv_Depth='+str(conv_depth)+"\n", "Point_Depth="+str(point_depth)+"\n", 'Linear_Depth='+str(lin_depth)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
     file.close()
 
 
