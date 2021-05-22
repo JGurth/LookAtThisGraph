@@ -9,9 +9,8 @@ from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.nets.ConvNet import ConvNet
 from lookatthisgraph.nets.ChebConv2 import ChebConvNet
 from lookatthisgraph.nets.CEnsembleNet1 import CEnsembleNet1
-from lookatthisgraph.nets.EnsembleNet1 import EnsembleNet1
 from lookatthisgraph.nets.EnsembleNet import EnsembleNet
-from lookatthisgraph.nets.EnsembleNet3 import EnsembleNet3
+from lookatthisgraph.nets.EnsembleNet2 import EnsembleNet2
 from lookatthisgraph.nets.CEnsembleNet import CEnsembleNet
 from lookatthisgraph.nets.PointConv import PointNet
 import datetime as dt
@@ -43,11 +42,11 @@ train_config = {
 
 
 width=32 #128
-conv_depth=4 #3
+conv_depth=5 #3
 point_depth=1 #3
 lin_depth=8 #5
 
-for point_depth in [2, 4, 6]:
+for width in [8, 256]:
 
     resultlist=[]
     train_config['dim']=[width, conv_depth, point_depth, lin_depth]
@@ -85,7 +84,7 @@ for point_depth in [2, 4, 6]:
     endresult=torch.mean(endresult0).item()
     STD=torch.std(endresult0).item()
     print('k-Fold final Accuracy:', endresult)
-    filename="Results/CEnsemble/Point/CAcc_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+    filename="Results/CEnsemble/Width/CAcc_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
     file=open(filename, "w")
     file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "Values: "+str(endresult0)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", 'Width='+str(width)+"\n", 'Conv_Depth='+str(conv_depth)+"\n", "Point_Depth="+str(point_depth)+"\n", 'Linear_Depth='+str(lin_depth)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
     file.close()

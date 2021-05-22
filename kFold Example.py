@@ -9,7 +9,7 @@ from lookatthisgraph.utils.trainer import Trainer
 from lookatthisgraph.nets.ConvNet import ConvNet
 from lookatthisgraph.nets.ChebConv2 import ChebConvNet
 from lookatthisgraph.nets.CEnsembleNet1 import CEnsembleNet1
-from lookatthisgraph.nets.EnsembleNet1 import EnsembleNet1
+from lookatthisgraph.nets.EnsembleNet2 import EnsembleNet2
 from lookatthisgraph.nets.EnsembleNet import EnsembleNet
 from lookatthisgraph.nets.CEnsembleNet1Relu import CEnsembleNet1Relu
 from lookatthisgraph.nets.CEnsembleNet import CEnsembleNet
@@ -36,7 +36,7 @@ train_config = {
         'max_epochs': 60,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
-        'net': EnsembleNet,
+        'net': EnsembleNet2,
         'dataset': train_set
     }
               
@@ -73,7 +73,7 @@ for k_crnt in range(k_max):
     endresult0=torch.cat(resultlist, 0)  
     
     if SaveNet:
-        trainer.save_network_info("Results/Ensemble/Net_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".p")
+        trainer.save_network_info("Results/Ensemble/Net_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+".p")
 
 
     if SavePlot:
