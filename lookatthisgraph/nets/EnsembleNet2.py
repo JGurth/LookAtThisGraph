@@ -70,7 +70,7 @@ class EnsembleNet2(torch.nn.Module):
         x = self.batchnorm1(x)
         for g in range(self.lin_depth):
             x=F.leaky_relu(self.linearfkt[g](x))
-            if (g-1)%3==0 and self.lin_depth-1>g:  #g=1,4,7,... u. noch mind. zwei weitere Layers
+            if (g-1)%2==0 and self.lin_depth-1>g:  #g=1,3,5,... u. noch mind. zwei weitere Layers
                 x = self.drop[g](x)
 
 

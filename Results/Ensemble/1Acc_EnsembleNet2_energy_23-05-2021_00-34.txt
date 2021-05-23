@@ -1,0 +1,5 @@
+Accuracy: 0.24029798805713654
+Training_Size=200000.0
+Epochs=200
+Batch_Size=1024
+Time=0.00030878005
