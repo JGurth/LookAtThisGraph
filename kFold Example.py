@@ -33,7 +33,7 @@ train_config = {
         'train_split': 2e4, #unnecessary/ignored
         'test_split': 2e3,  #unnecessary/ignored
         'batch_size': 1024,
-        'max_epochs': 60,
+        'max_epochs': 120,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
         'net': EnsembleNet2,
@@ -50,48 +50,48 @@ resultlist=[]
 
 
 for k_crnt in range(k_max):
-    train_config['kFold_crnt']=k_crnt
+	train_config['kFold_crnt']=k_crnt
   
-    trainer = Trainer(train_config)
-    trainer.train()
-    trainer.load_best_model()
-    start=dt.datetime.utcnow()
-    prediction, truth = trainer.evaluate_test_samples()
+	trainer = Trainer(train_config)
+	trainer.train()
+	trainer.load_best_model()
+	start=dt.datetime.utcnow()
+	prediction, truth = trainer.evaluate_test_samples()
     
-    end=dt.datetime.utcnow()
-    time=dt.timedelta.total_seconds(end-start)/(k_size/k_max) 
+	end=dt.datetime.utcnow()
+	time=dt.timedelta.total_seconds(end-start)/(k_size/k_max) 
     
-    prediction=torch.from_numpy(prediction)
-    truth=torch.from_numpy(truth[train_config['training_target']].flatten())
-    if train_config['training_target']=='energy':
-        avrg=torch.mean(torch.abs(torch.sub(prediction, truth))).item()
-    else:
-        avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
-    result=torch.tensor([avrg])
-    resultlist.append(result)
+	prediction=torch.from_numpy(prediction)
+	truth=torch.from_numpy(truth[train_config['training_target']].flatten())
+	if train_config['training_target']=='energy':
+		avrg=torch.mean(torch.abs(torch.sub(prediction, truth))).item()
+	else:
+		avrg=torch.mean(torch.square(torch.sub(torch.reshape(prediction, (-1,)), truth))).item()  #Average
+	result=torch.tensor([avrg])
+	resultlist.append(result)
     
-    endresult0=torch.cat(resultlist, 0)  
+	endresult0=torch.cat(resultlist, 0)  
     
-    if SaveNet:
-        trainer.save_network_info("Results/Ensemble/Net_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+".p")
+	if SaveNet:
+        	trainer.save_network_info("Results/Ensemble3/Net_"+"N"+str(k_crnt)+"_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+".p")
 
 
-    if SavePlot:
-	plt.figure()
-	plt.plot(np.arange(len(trainer.train_losses)), trainer.train_losses, label='Training loss')
-	plt.plot(np.arange(len(trainer.train_losses)), trainer.validation_losses, label='Validation loss')
-	plt.xlabel('Epoch')
-	plt.ylabel('Loss')
-	plt.yscale('log')
-	plt.legend()
-	plt.savefig("Results/Ensemble/Plot_"+train_config['net'](1,1).__class__.__name__+"_"+tain_config['training_target']+"_"+str(avrg)+".png")
+	if SavePlot:
+		plt.figure()
+		plt.plot(np.arange(len(trainer.train_losses)), trainer.train_losses, label='Training loss')
+		plt.plot(np.arange(len(trainer.train_losses)), trainer.validation_losses, label='Validation loss')
+		plt.xlabel('Epoch')
+		plt.ylabel('Loss')
+		plt.yscale('log')
+		plt.legend()
+		plt.savefig("Results/Ensemble3/Plot_"+"N"+str(k_crnt)+"_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".png")
 
     
 
 endresult=torch.mean(endresult0).item()
 STD=torch.std(endresult0).item()
 print('k-Fold final Accuracy:', endresult)
-filename="Results/Ensemble/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+filename="Results/Ensemble3/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")
 file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "Values: "+str(endresult0)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
 file.close()
