@@ -15,8 +15,8 @@ from lookatthisgraph.nets.CEnsembleNet1 import CEnsembleNet1
 import datetime as dt
 
 
-FileLocation="Data/140000"
-SavePlot=True
+FileLocation=["/remote/ceph2/user/g/gurth/Data/120000", "/remote/ceph2/user/g/gurth/Data/140000_2", "/remote/ceph2/user/g/gurth/Data/140000", "/remote/ceph2/user/g/gurth/Data/160000"]
+SavePlot=False
 
 
 for i in [1]:
@@ -32,7 +32,7 @@ for i in [1]:
 	        'net': EnsembleNet2
 	    }
 	#LDataset hängt von Config ab und muss deswegen in dieser Reihenfolge definiert werden:
-	train_set = LDataset([FileLocation], train_config)
+	train_set = LDataset(FileLocation, train_config)
 	train_config['dataset']=train_set
 
 	trainer = LTrainer(train_config)

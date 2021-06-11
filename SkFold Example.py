@@ -17,14 +17,14 @@ import datetime as dt
 
 
 
-FileLocation=["/remote/ceph2/user/g/gurth/Results/120000", "/remote/ceph2/user/g/gurth/Results/140000_2", "/remote/ceph2/user/g/gurth/Results/140000", "/remote/ceph2/user/g/gurth/Results/160000"]
+FileLocation=["/remote/ceph2/user/g/gurth/Data/120000", "/remote/ceph2/user/g/gurth/Data/140000_2", "/remote/ceph2/user/g/gurth/Data/140000", "/remote/ceph2/user/g/gurth/Data/160000"]
 k_max=4    #=k von K-fold validation
 
-train_set = Dataset([FileLocation])
+train_set = Dataset(FileLocation)
 SaveNet=False
 
 
-for k_size in [1e5, 2e5, 5e5, 1e6, 2e6]
+for k_size in [int(1e5), int(2e5), int(5e5), int(1e6), int(2e6)]:
     
 
     train_config = {
@@ -34,6 +34,7 @@ for k_size in [1e5, 2e5, 5e5, 1e6, 2e6]
             'training_target': 'energy',
             'train_split': 2e4, #unnecessary/ignored
             'test_split': 2e3,  #unnecessary/ignored
+            'validation_split': int(0.05*k_size),
             'batch_size': 1024,
             'max_epochs': 80,
             'kFold_max' : k_max,
@@ -74,16 +75,16 @@ for k_size in [1e5, 2e5, 5e5, 1e6, 2e6]
         endresult0=torch.cat(resultlist, 0)  
         
         if SaveNet:
-            trainer.save_network_info("Results/SampleSize/Net_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+str(avrg)+".p")
+            trainer.save_network_info("Results/SampleSize/Net_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".p")
     
         
     
     endresult=torch.mean(endresult0).item()
     STD=torch.std(endresult0).item()
     print('k-Fold final Accuracy:', endresult)
-    filename="Results/SampleSize/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+    filename="Results/SampleSize/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
     file=open(filename, "w")
-    file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "Values: "+str(endresult0)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", 'Width='+str(width)+"\n", 'Conv_Depth='+str(conv_depth)+"\n", "Point_Depth="+str(point_depth)+"\n", 'Linear_Depth='+str(lin_depth)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
+    file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "Values: "+str(endresult0)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
     file.close()
 
 
