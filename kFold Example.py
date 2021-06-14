@@ -19,25 +19,24 @@ import datetime as dt
 
 
 FileLocation=["Data/140000"]
+#FileLocation=["/remote/ceph2/user/g/gurth/Data/120000", "/remote/ceph2/user/g/gurth/Data/140000_2", "/remote/ceph2/user/g/gurth/Data/140000", "/remote/ceph2/user/g/gurth/Data/160000"]
 k_max=10    #=k von K-fold validation
 k_size=int(1e5)  #=size of K-fold sample (aka Test+Train Split)
 train_set = Dataset(FileLocation)
-SaveNet=True
-SavePlot=True
+SaveNet=False
+SavePlot=False
 
 train_config = {
         'learning_rate': 7e-4,
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'train_split': 2e4, #unnecessary/ignored
-        'test_split': 2e3,  #unnecessary/ignored
-        'validation_split': int(0.05*k_size),
+        'validation_split': 1024, # int(0.05*k_size),
         'batch_size': 1024,
         'max_epochs': 100,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
-        'net': EnsembleNet2,
+        'net': ConvNet,
         'dataset': train_set
     }
               
@@ -74,7 +73,7 @@ for k_crnt in range(k_max):
 	endresult0=torch.cat(resultlist, 0)  
     
 	if SaveNet:
-        	trainer.save_network_info("Results/Ensemble4/Net_"+"N"+str(k_crnt)+"_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+".p")
+        	trainer.save_network_info("Results/EnsembleL/Net_"+"N"+str(k_crnt)+"_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+".p")
 
 
 	if SavePlot:
@@ -85,14 +84,14 @@ for k_crnt in range(k_max):
 		plt.ylabel('Loss')
 		plt.yscale('log')
 		plt.legend()
-		plt.savefig("Results/Ensemble4/Plot_"+"N"+str(k_crnt)+"_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".png")
+		plt.savefig("Results/EnsembleL/Plot_"+"N"+str(k_crnt)+"_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+str(avrg)+".png")
 
     
 
 endresult=torch.mean(endresult0).item()
 STD=torch.std(endresult0).item()
 print('k-Fold final Accuracy:', endresult)
-filename="Results/Ensemble4/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+filename="Results/ConvNet_Basic/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
 file=open(filename, "w")
 file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "Values: "+str(endresult0)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
 file.close()

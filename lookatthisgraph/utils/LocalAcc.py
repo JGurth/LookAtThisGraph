@@ -9,11 +9,11 @@ from lookatthisgraph.utils.model import Model
 import datetime as dt
 
 
-def LocalAcc(Net, DataLocation="Data/140000", nblocks=20):
+def LocalAcc(Net, DataLocation=["Data/140000"], SaveLocation="Results/Plots", nblocks=20):
 
     info = pickle.load(open(Net, 'rb'))
     m = Model(info)
-    test_set = Dataset([DataLocation], info['normalization_parameters'][0])
+    test_set = Dataset(DataLocation, info['normalization_parameters'][0])
     prediction, truth = m.evaluate_dataset(test_set, 32)
     
     truth=truth['energy'].flatten()    
@@ -52,6 +52,6 @@ def LocalAcc(Net, DataLocation="Data/140000", nblocks=20):
     plt.xscale("log")
     plt.ylabel('Accuracy')
     plt.tight_layout()
-    plt.savefig("Plots/AccPlot_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M"), format='pdf')
-    plt.savefig("Plots/AccPlot_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M"), format='png')
+    plt.savefig(str(SaveLocation)+"/AccPlot_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M"), format='pdf')
+    plt.savefig(str(SaveLocation)+"/AccPlot_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M"), format='png')
 
