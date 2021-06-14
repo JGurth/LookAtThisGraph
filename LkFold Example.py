@@ -6,7 +6,6 @@ import numpy as np
 import torch
 from lookatthisgraph.utils.dataset import Dataset
 from lookatthisgraph.utils.trainer import Trainer
-from lookatthisgraph.nets.SGConv import SGConvNet
 from lookatthisgraph.utils.LDataset import LDataset
 from lookatthisgraph.utils.LTrainer import LTrainer
 from lookatthisgraph.nets.ChebConv2 import ChebConvNet
