@@ -20,8 +20,8 @@ import datetime as dt
 
 FileLocation=["Data/140000"]
 #FileLocation=["/remote/ceph2/user/g/gurth/Data/120000", "/remote/ceph2/user/g/gurth/Data/140000_2", "/remote/ceph2/user/g/gurth/Data/140000", "/remote/ceph2/user/g/gurth/Data/160000"]
-k_max=10    #=k von K-fold validation
-k_size=int(1e5)  #=size of K-fold sample (aka Test+Train Split)
+k_max=5    #=k von K-fold validation
+k_size=int(2e5)  #=size of K-fold sample (aka Test+Train Split)
 train_set = Dataset(FileLocation)
 SaveNet=False
 SavePlot=False
@@ -31,12 +31,12 @@ train_config = {
         'scheduling_step_size': 30,        
         'scheduling_gamma': .7,
         'training_target': 'energy',
-        'validation_split': 1024, # int(0.05*k_size),
+        'validation_split': int(0.05*k_size),
         'batch_size': 1024,
-        'max_epochs': 100,
+        'max_epochs': 80,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
-        'net': ConvNet,
+        'net': CEnsembleNet,
         'dataset': train_set
     }
               
