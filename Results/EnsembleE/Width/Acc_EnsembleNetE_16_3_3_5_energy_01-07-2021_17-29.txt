@@ -1,0 +1,12 @@
+k-Fold final Accuracy: 0.247257262468338
+k-Fold standart deviation: 0.016210375353693962
+Values: tensor([0.2280, 0.2522, 0.2424, 0.2665])
+k_max=4
+k_size=100000
+Width=16
+Conv_Depth=3
+Point_Depth=3
+Linear_Depth=5
+Epochs=50
+Batch_Size=1024
+Time=0.00013078604

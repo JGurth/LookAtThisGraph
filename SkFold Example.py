@@ -24,7 +24,7 @@ train_set = Dataset(FileLocation)
 SaveNet=False
 
 
-for k_size in [int(1e5), int(2e5), int(5e5), int(1e6), int(2e6)]:
+for k_size in [int(2e6)]:
     
 
     train_config = {
@@ -39,7 +39,7 @@ for k_size in [int(1e5), int(2e5), int(5e5), int(1e6), int(2e6)]:
             'max_epochs': 80,
             'kFold_max' : k_max,
             'kFold_size' : k_size,
-            'net': EnsembleNet2,
+            'net': ConvNet,
             'dataset': train_set
         }
               

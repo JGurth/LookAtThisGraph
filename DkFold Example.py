@@ -11,16 +11,17 @@ from lookatthisgraph.nets.ChebConv2 import ChebConvNet
 from lookatthisgraph.nets.CEnsembleNet1 import CEnsembleNet1
 from lookatthisgraph.nets.EnsembleNet import EnsembleNet
 from lookatthisgraph.nets.EnsembleNet2 import EnsembleNet2
+from lookatthisgraph.nets.EnsembleNetE import EnsembleNetE
 from lookatthisgraph.nets.CEnsembleNet import CEnsembleNet
 from lookatthisgraph.nets.PointConv import PointNet
 import datetime as dt
 
 
 
-FileLocation="Data/140000"
-k_max=5    #=k von K-fold validation
+FileLocation=["Data/140000"]
+k_max=4    #=k von K-fold validation
 k_size=int(1e5)  #=size of K-fold sample (aka Test+Train Split)
-train_set = Dataset([FileLocation])
+train_set = Dataset(FileLocation)
 SaveNet=False
 
 train_config = {
@@ -30,23 +31,24 @@ train_config = {
         'training_target': 'energy',
         'train_split': 2e4, #unnecessary/ignored
         'test_split': 2e3,  #unnecessary/ignored
-        'batch_size': 512,
-        'max_epochs': 40,
+        'validation_split': int(0.05*k_size),
+        'batch_size': 1024,
+        'max_epochs': 50,
         'kFold_max' : k_max,
         'kFold_size' : k_size,
-        'net': CEnsembleNet1,
+        'net': EnsembleNetE,
         'dataset': train_set
     }
               
 
 
 
-width=32 #128
-conv_depth=5 #3
-point_depth=1 #3
-lin_depth=8 #5
+width=128 #128
+conv_depth=3 #3
+point_depth=3 #3
+lin_depth=5 #5
 
-for lin_depth in [2, 3, 4, 5, 6, 7, 8, 9]:
+for conv_depth in [2, 3, 4, 5, 6, 7]:
 
     resultlist=[]
     train_config['dim']=[width, conv_depth, point_depth, lin_depth]
@@ -77,14 +79,14 @@ for lin_depth in [2, 3, 4, 5, 6, 7, 8, 9]:
         endresult0=torch.cat(resultlist, 0)  
         
         if SaveNet:
-            trainer.save_network_info("Results/CEnsemble/Net_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+str(avrg)+".p")
+            trainer.save_network_info("Results/EnsembleE/Net_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+str(avrg)+".p")
     
         
     
     endresult=torch.mean(endresult0).item()
     STD=torch.std(endresult0).item()
     print('k-Fold final Accuracy:', endresult)
-    filename="Results/CEnsemble/Lin/BAcc_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
+    filename="Results/EnsembleE/Conv/Acc_"+train_config['net'](1,1).__class__.__name__+"_"+str(width)+"_"+str(conv_depth)+"_"+str(point_depth)+"_"+str(lin_depth)+"_"+train_config['training_target']+"_"+dt.datetime.now().strftime("%d-%m-%Y_%H-%M")+".txt"
     file=open(filename, "w")
     file.writelines(['k-Fold final Accuracy: '+str(endresult)+"\n", 'k-Fold standart deviation: '+str(STD)+"\n", "Values: "+str(endresult0)+"\n", "k_max="+str(k_max)+"\n", "k_size="+str(k_size)+"\n", 'Width='+str(width)+"\n", 'Conv_Depth='+str(conv_depth)+"\n", "Point_Depth="+str(point_depth)+"\n", 'Linear_Depth='+str(lin_depth)+"\n", "Epochs="+str(train_config['max_epochs'])+"\n", "Batch_Size="+str(train_config['batch_size'])+"\n", "Time="+str(time)])
     file.close()
